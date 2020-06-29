@@ -78,13 +78,14 @@ func mainPackages(pkgs []*ssa.Package) ([]*ssa.Package, error) {
 }
 
 type renderOpts struct {
-	focus   string
-	group   []string
-	ignore  []string
-	include []string
-	limit   []string
-	nointer bool
-	nostd   bool
+	focus    string
+	group    []string
+	ignore   []string
+	include  []string
+	limit    []string
+	nointer  bool
+	nostd    bool
+	viewtype string
 }
 
 func (a *analysis) render(opts renderOpts) ([]byte, error) {
@@ -125,7 +126,7 @@ func (a *analysis) render(opts renderOpts) ([]byte, error) {
 	}
 
 	dot, err := printOutput(a.prog, a.mains[0].Pkg, a.result.CallGraph,
-		focusPkg, opts.limit, opts.ignore, opts.include, opts.group, opts.nostd, opts.nointer)
+		focusPkg, opts.limit, opts.ignore, opts.include, opts.group, opts.nostd, opts.nointer, opts.viewtype)
 	if err != nil {
 		return nil, fmt.Errorf("processing failed: %v", err)
 	}

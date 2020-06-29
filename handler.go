@@ -10,13 +10,15 @@ import (
 
 func analysisSetup() (r renderOpts) {
 	r = renderOpts{
-		focus:   *focusFlag,
-		group:   []string{*groupFlag},
-		ignore:  []string{*ignoreFlag},
-		include: []string{*includeFlag},
-		limit:   []string{*limitFlag},
-		nointer: *nointerFlag,
-		nostd:   *nostdFlag}
+		focus:    *focusFlag,
+		group:    []string{*groupFlag},
+		ignore:   []string{*ignoreFlag},
+		include:  []string{*includeFlag},
+		limit:    []string{*limitFlag},
+		nointer:  *nointerFlag,
+		nostd:    *nostdFlag,
+		viewtype: *typeFlag,
+	}
 
 	return r
 }

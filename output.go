@@ -22,7 +22,7 @@ func inStd(node *callgraph.Node) bool {
 }
 
 func printOutput(prog *ssa.Program, mainPkg *types.Package, cg *callgraph.Graph, focusPkg *types.Package,
-	limitPaths, ignorePaths, includePaths []string, groupBy []string, nostd, nointer bool) ([]byte, error) {
+	limitPaths, ignorePaths, includePaths []string, groupBy []string, nostd, nointer bool, viewtype string) ([]byte, error) {
 	var groupType, groupPkg bool
 	for _, g := range groupBy {
 		if g == "pkg" {
@@ -128,6 +128,24 @@ func printOutput(prog *ssa.Program, mainPkg *types.Package, cg *callgraph.Graph,
 		return false
 	}
 
+	var isViewTypeRelated = func(edge *callgraph.Edge) bool {
+		caller := edge.Caller
+		callee := edge.Callee
+
+		callerLabel := caller.Func.RelString(caller.Func.Pkg.Pkg)
+		calleeLabel := callee.Func.RelString(callee.Func.Pkg.Pkg)
+		logf("class: %s  %s %s", viewtype, callerLabel, calleeLabel)
+		if viewtype[0] == '2' {
+			return strings.Contains(calleeLabel, "*"+viewtype[1:])
+		} else if viewtype[0] == '5' {
+			return strings.Contains(callerLabel, "*"+viewtype[1:])
+		} else if strings.Contains(callerLabel, "*"+viewtype) ||
+			strings.Contains(calleeLabel, "*"+viewtype) {
+			return true
+		}
+		return false
+	}
+
 	count := 0
 	err := callgraph.GraphVisitEdges(cg, func(edge *callgraph.Edge) error {
 		count++
@@ -173,6 +191,11 @@ func printOutput(prog *ssa.Program, mainPkg *types.Package, cg *callgraph.Graph,
 		}
 
 		if !include {
+			if len(viewtype) > 0 &&
+				!isViewTypeRelated(edge) {
+				return nil
+			}
+
 			// limit path prefixes
 			if len(limitPaths) > 0 &&
 				(!inLimits(caller) || !inLimits(callee)) {

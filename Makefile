@@ -7,7 +7,7 @@ GOARCH = amd64
 PLATFORMS := linux-$(GOARCH) darwin-$(GOARCH)
 
 BUILD_DIR ?= ./build
-ORG := github.com/ofabry
+ORG := github.com/zhangying888
 PROJECT := go-callvis
 REPOPATH ?= $(ORG)/$(PROJECT)
 BUILD_PACKAGE = $(REPOPATH)
